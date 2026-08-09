@@ -29,10 +29,14 @@ progress bar.
    git clone https://github.com/Zeyad-Abady/datacraft-academy-airflow-workshop.git
    cd datacraft-academy-airflow-workshop
    cp .env.sample .env
-   docker compose build
-   docker compose up airflow-init
-   docker compose up -d
-   docker compose ps
+
+   # Linux only — avoids file permission issues on mounted volumes:
+   # echo "AIRFLOW_UID=$(id -u)" >> .env
+
+   docker compose build          # builds the custom image (requests pre-installed)
+   docker compose up airflow-init   # one-time: migrates the DB, creates the admin user
+   docker compose up -d          # boots postgres + webserver + scheduler
+   docker compose ps             # confirm everything is healthy
    ```
 
 4. **Confirm it worked:**
@@ -53,25 +57,7 @@ progress bar.
 Stuck on any step? See Troubleshooting below, or message the instructor
 *before* the session so we can sort it out ahead of time.
 
-## Quick Start
-
-```bash
-git clone https://github.com/Zeyad-Abady/datacraft-academy-airflow-workshop.git
-cd datacraft-academy-airflow-workshop
-cp .env.sample .env
-
-# Linux only — avoids file permission issues on mounted volumes:
-# echo "AIRFLOW_UID=$(id -u)" >> .env
-
-docker compose build          # builds the custom image (requests pre-installed)
-docker compose up airflow-init   # one-time: migrates the DB, creates the admin user
-docker compose up -d          # boots postgres + webserver + scheduler
-docker compose ps             # confirm everything is healthy
-```
-
-Open **http://localhost:8080** and log in with `airflow` / `airflow`.
-
-### Pro tip for instructors
+### Instructor note
 
 `docker compose build` and the first `docker compose up -d` pull ~1 GB of
 images and build a custom image — this can take several minutes on
