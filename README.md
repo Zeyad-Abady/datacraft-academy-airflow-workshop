@@ -10,6 +10,49 @@ Data Engineers" course (Sessions 1 & 2). No cloud accounts, no billing.
 - **git**
 - ~4 GB of free RAM for Docker
 
+## Before Session 1 — Pre-Work Checklist (students, please do this ahead of time)
+
+This takes about 15–20 minutes depending on your internet connection. Doing
+it before Session 1 means we spend class time learning, not watching a
+progress bar.
+
+1. **Install Docker Desktop** (skip if already installed):
+   - Windows: https://docs.docker.com/desktop/install/windows-install/
+   - Mac: https://docs.docker.com/desktop/install/mac-install/
+   - Linux: https://docs.docker.com/desktop/install/linux-install/
+   - After installing, **open Docker Desktop and make sure it's running**
+     (you should see the whale icon in your system tray / menu bar).
+2. **Install Git** (skip if already installed): https://git-scm.com/downloads
+3. **Clone and boot the stack** — open a terminal and run:
+
+   ```bash
+   git clone https://github.com/Zeyad-Abady/datacraft-academy-airflow-workshop.git
+   cd datacraft-academy-airflow-workshop
+   cp .env.sample .env
+   docker compose build
+   docker compose up airflow-init
+   docker compose up -d
+   docker compose ps
+   ```
+
+4. **Confirm it worked:**
+   - `docker compose ps` shows `postgres`, `airflow-webserver`, and
+     `airflow-scheduler` all healthy / up.
+   - http://localhost:8080 loads in your browser and you can log in with
+     `airflow` / `airflow`.
+5. **Shut it down until session day** (optional, but recommended if you're
+   short on laptop battery/RAM):
+
+   ```bash
+   docker compose down
+   ```
+
+   This keeps everything you downloaded cached — on the day, bringing it
+   back up is just `docker compose up -d` and takes seconds, not minutes.
+
+Stuck on any step? See Troubleshooting below, or message the instructor
+*before* the session so we can sort it out ahead of time.
+
 ## Quick Start
 
 ```bash
