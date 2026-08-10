@@ -11,6 +11,7 @@ Reference table (already created for you on first Postgres boot):
     lab1_staging (id TEXT PRIMARY KEY, text TEXT, loaded_at TIMESTAMP)
 """
 from airflow.decorators import dag, task
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from datetime import datetime
 import requests
 
@@ -25,16 +26,19 @@ def lab1_first_dag():
 
     @task
     def fetch_joke() -> dict:
-        # TODO: GET https://api.chucknorris.io/jokes/random
-        # Return a dict with keys "id" and "text".
-        raise NotImplementedError
+        r = requests.get("https://api.chucknorris.io/jokes/random", timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        return {"id": data["id"], "text": data["value"]}
 
     @task
     def insert_row(joke: dict):
-        # TODO: use PostgresHook(postgres_conn_id="postgres_default") to
-        # INSERT the joke into lab1_staging. Use ON CONFLICT (id) DO NOTHING
-        # so re-running the task is idempotent.
-        raise NotImplementedError
+        hook = PostgresHook(postgres_conn_id="postgres_default")
+        hook.run(
+            "INSERT INTO lab1_staging (id, text, loaded_at) "
+            "VALUES (%s, %s, NOW()) ON CONFLICT (id) DO NOTHING;",
+            parameters=(joke["id"], joke["text"]),
+        )
 
     insert_row(fetch_joke())
 
