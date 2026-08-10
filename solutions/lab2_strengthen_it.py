@@ -1,9 +1,10 @@
 """
 Lab 2 — Strengthen It (SOLUTION). Matches Session 1, slide 16.
 
-Hardens the Lab 1 DAG with a real Connection (already true from Lab 1),
-retries + retry_delay, and an on_failure_callback. Point fetch_joke's URL
-at a bad domain to trigger and watch the retry/failure behavior live.
+Hardens the Lab 1 DAG: replaces Lab 1's hardcoded psycopg2 connection with
+a real Airflow Connection (postgres_default via PostgresHook), adds
+retries + retry_delay, and adds an on_failure_callback. Point fetch_joke's
+URL at a bad domain to trigger and watch the retry/failure behavior live.
 """
 from airflow.decorators import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook

@@ -4,9 +4,10 @@ Lab 2 — Strengthen It (STARTER, in-class independent practice — Session 1)
 Six minutes. Take your working Lab 1 DAG (lab1_starter.py / solutions/lab1_first_dag.py)
 and harden it with three things you just learned:
 
-  1. A real Airflow Connection — you're probably already using postgres_default
-     via PostgresHook from Lab 1. Confirm there are no hardcoded hosts,
-     credentials, or ports anywhere in this file.
+  1. Replace the hardcoded host/user/password from Lab 1's insert_row task
+     with a real Airflow Connection (postgres_default) via PostgresHook.
+     That psycopg2.connect(...) call with the plaintext password goes away
+     entirely.
   2. retries and retry_delay on the DAG's default_args — retries=3,
      retry_delay=timedelta(seconds=30).
   3. An on_failure_callback that logs (or, if you want to go further,
@@ -26,9 +27,9 @@ TODOs, save, and trigger it. The full answer is in
 ../solutions/lab2_strengthen_it.py if you get stuck.
 """
 from airflow.decorators import dag, task
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 from datetime import datetime, timedelta
 import requests
+import psycopg2
 
 
 def alert_on_failure(context):
@@ -65,14 +66,21 @@ def lab2_strengthen_it():
 
     @task
     def insert_row(joke: dict):
-        # Reuse the postgres_default Connection you set up on slide 13 —
-        # no hardcoded host, login, or password here.
-        hook = PostgresHook(postgres_conn_id="postgres_default")
-        hook.run(
-            "INSERT INTO lab1_staging (id, text, loaded_at) "
-            "VALUES (%s, %s, NOW()) ON CONFLICT (id) DO NOTHING;",
-            parameters=(joke["id"], joke["text"]),
+        # TODO: this is Lab 1's hardcoded connection — replace it.
+        # Import PostgresHook (airflow.providers.postgres.hooks.postgres),
+        # use PostgresHook(postgres_conn_id="postgres_default"), and call
+        # hook.run(sql, parameters=(...)) instead of psycopg2.connect().
+        conn = psycopg2.connect(
+            host="postgres", dbname="airflow",
+            user="airflow", password="airflow", port=5432,
         )
+        with conn, conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO lab1_staging (id, text, loaded_at) "
+                "VALUES (%s, %s, NOW()) ON CONFLICT (id) DO NOTHING;",
+                (joke["id"], joke["text"]),
+            )
+        conn.close()
 
     insert_row(fetch_joke())
 

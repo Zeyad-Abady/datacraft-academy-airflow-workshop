@@ -1,8 +1,14 @@
-"""Lab 1 — Your First DAG (SOLUTION). Matches Session 1, slide 14."""
+"""
+Lab 1 — Your First DAG (SOLUTION). Matches Session 1, slide 13.
+
+Connects to Postgres the quick way — psycopg2, with host/user/password
+typed directly into the file. Deliberately not best practice: Lab 2
+(slide 16) replaces this with a real Airflow Connection via PostgresHook.
+"""
 from airflow.decorators import dag, task
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 from datetime import datetime
 import requests
+import psycopg2
 
 
 @dag(schedule="@daily", start_date=datetime(2024, 1, 1), catchup=False, tags=["lab1", "solution"])
@@ -17,12 +23,19 @@ def lab1_first_dag():
 
     @task
     def insert_row(joke: dict):
-        hook = PostgresHook(postgres_conn_id="postgres_default")
-        hook.run(
-            "INSERT INTO lab1_staging (id, text, loaded_at) "
-            "VALUES (%s, %s, NOW()) ON CONFLICT (id) DO NOTHING;",
-            parameters=(joke["id"], joke["text"]),
+        # Quick and dirty for Lab 1 — host/user/password typed right here.
+        # We replace this with a real Airflow Connection in Lab 2.
+        conn = psycopg2.connect(
+            host="postgres", dbname="airflow",
+            user="airflow", password="airflow", port=5432,
         )
+        with conn, conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO lab1_staging (id, text, loaded_at) "
+                "VALUES (%s, %s, NOW()) ON CONFLICT (id) DO NOTHING;",
+                (joke["id"], joke["text"]),
+            )
+        conn.close()
 
     insert_row(fetch_joke())
 
