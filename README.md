@@ -90,14 +90,24 @@ airflow-workshop/
 
 | Lab | Starter | Solution | Covered in |
 |---|---|---|---|
-| Lab 1 — Your First DAG | `labs/lab1_starter.py` | `solutions/lab1_first_dag.py` | Session 1 |
-| Lab 2 — Add a Quality Check | `labs/lab2_starter.py` | `solutions/lab2_quality_check.py` | Session 1 → 2 (homework) |
+| Lab 1 — Your First DAG | `labs/lab1_starter.py` | `solutions/lab1_first_dag.py` | Session 1 (live-coded) |
+| Lab 2 — Strengthen It | `labs/lab2_starter.py` | `solutions/lab2_strengthen_it.py` | Session 1 (in-class, 6 min) |
 | Lab 3 — Capstone Pipeline | `labs/lab3_starter.py` | `solutions/lab3_capstone_pipeline.py` | Session 2 |
 
 To work a lab: copy the starter file from `labs/` into `dags/`, fill in the
 `TODO`s, save, and it will appear in the Airflow UI within ~30 seconds. If
 you get stuck, the matching file in `solutions/` is the full answer — try
 not to peek until you've had a real attempt.
+
+### Optional Post-Session Practice
+
+Not a numbered lab, so it's not required — but the branching pattern here is
+exactly what Lab 3's capstone needs, so doing this between Session 1 and
+Session 2 makes the capstone noticeably easier.
+
+| Task | Starter | Solution | When |
+|---|---|---|---|
+| Add a Quality Check | `labs/quality_check_practice.py` | `solutions/quality_check_practice.py` | Between Session 1 and 2 (~1 hr, optional) |
 
 ## Pre-Created Postgres Tables
 

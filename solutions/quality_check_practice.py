@@ -1,12 +1,12 @@
-"""Lab 2 — Add a Quality Check (SOLUTION). Matches Session 2, slides 3-7."""
+"""Post-Session Practice — Add a Quality Check (SOLUTION). Matches Session 2, slides 3-7."""
 from airflow.decorators import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from datetime import datetime
 import requests
 
 
-@dag(schedule="@daily", start_date=datetime(2024, 1, 1), catchup=False, tags=["lab2", "solution"])
-def lab2_quality_check():
+@dag(schedule="@daily", start_date=datetime(2024, 1, 1), catchup=False, tags=["practice", "quality-check", "solution"])
+def quality_check_practice():
 
     @task
     def fetch_joke() -> dict:
@@ -43,4 +43,4 @@ def lab2_quality_check():
     check_quality(ref) >> [quarantine(), promote()]
 
 
-lab2_quality_check()
+quality_check_practice()
