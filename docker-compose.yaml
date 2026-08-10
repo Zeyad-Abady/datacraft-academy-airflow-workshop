@@ -23,8 +23,10 @@ x-airflow-common: &airflow-common
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+    # The Connections "Test" button is disabled by default since Airflow 2.7
+    # (security hardening). Enabled here since this is a local workshop stack.
+    AIRFLOW__CORE__TEST_CONNECTION: "Enabled"
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
-    AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: "15"
     AIRFLOW_UID: ${AIRFLOW_UID:-50000}
   volumes:
     - ./dags:/opt/airflow/dags
