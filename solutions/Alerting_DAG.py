@@ -17,7 +17,8 @@ default_args = {
 )
 def resilient_dag():
     @task(retries=5)  # override for this task only
-    def flaky_api_call(): ...
+    def flaky_api_call():
+        raise RuntimeError("Simulated failure for the retry demo")
 
     flaky_api_call()
 

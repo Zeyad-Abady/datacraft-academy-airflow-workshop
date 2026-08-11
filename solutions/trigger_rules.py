@@ -20,7 +20,7 @@ def trigger_rules_demo():
         # Same PostgresHook pattern as Lab 2. Flip FORCE_FAILURE above and
         # re-trigger to watch it fail after 3 retries.
         if FORCE_FAILURE:
-            ...
+            raise RuntimeError("Simulated failure for the trigger rules demo")
         hook = PostgresHook(postgres_conn_id="postgres_default")
         hook.run(
             "INSERT INTO lab1_staging (id, text, loaded_at) "
@@ -28,11 +28,11 @@ def trigger_rules_demo():
             parameters=("trigger-rules-demo", "inserted by trigger_rules_demo"),
         )
 
-    @task()
+    @task(trigger_rule=TriggerRule.ONE_FAILED)
     def alert_on_any_failure():
         print("[ALERT] insert_row failed after all retries — page on-call here.")
 
-    @task()
+    @task(trigger_rule=TriggerRule.ALL_DONE)
     def send_status_report():
         print("Run finished — this always executes, success or failure.")
 
