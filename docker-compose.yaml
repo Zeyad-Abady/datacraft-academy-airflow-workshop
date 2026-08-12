@@ -113,5 +113,28 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  # Powers deferrable operators (Session 2, "Sensors in Practice" demo). Without
+  # this, a task with deferrable=True just sits in "deferred" state forever —
+  # there is no process to resume it.
+  airflow-triggerer:
+    <<: *airflow-common
+    command: triggerer
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+
 volumes:
   postgres-db-volume:
