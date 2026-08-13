@@ -77,11 +77,12 @@ docker compose down -v    # stop everything AND wipe the database (fresh start)
 
 ```
 airflow-workshop/
-├── docker-compose.yaml   # the whole stack: postgres, webserver, scheduler
+├── docker-compose.yaml   # the whole stack: postgres, webserver, scheduler, triggerer
 ├── Dockerfile            # apache/airflow base + requests
 ├── dags/                 # DROP YOUR WORKING DAGS HERE — this is what Airflow scans
 ├── labs/                 # starter files with TODOs — copy into dags/ to begin a lab
 ├── solutions/            # full reference implementations for each lab
+├── session2/             # Session 2 instructor demo DAGs — see Instructor Demos below
 ├── sql/lab3/             # SQL files used by the Lab 3 capstone's SQLExecuteQueryOperator
 └── init-db/              # SQL that auto-creates the workshop's Postgres tables on first boot
 ```
@@ -108,6 +109,36 @@ Session 2 makes the capstone noticeably easier.
 | Task | Starter | Solution | When |
 |---|---|---|---|
 | Add a Quality Check | `labs/quality_check_practice.py` | `solutions/quality_check_practice.py` | Between Session 1 and 2 (~1 hr, optional) |
+
+## Instructor Demos
+
+Not student exercises — ready-to-run DAGs the instructor triggers live during
+a session. Each one is a standalone `dag_id`; copy the file into `dags/` to
+run it.
+
+### Session 1
+
+| Demo | File | Topic |
+|---|---|---|
+| Alerting on Failure | `labs/alerting_demo.py` / `solutions/alerting_demo.py` | `default_args` retries, `retry_delay`, per-task retry override |
+| Dynamic Task Mapping | `labs/dynamic_mapping_demo.py` / `solutions/dynamic_mapping_demo.py` | `.expand()` fanning a task out over a list of inputs |
+| Trigger Rules | `labs/trigger_rules.py` / `solutions/trigger_rules.py` | `trigger_rule` fan-in behavior when an upstream task fails |
+
+### Session 2 (`session2/`)
+
+| Demo | File | Topic |
+|---|---|---|
+| XComs | `session2/xcom_dag.py` | Passing small references between tasks, not whole payloads |
+| Sensors in Practice | `session2/deferrable_demo.py` | poke vs. reschedule vs. deferred, side by side |
+| SQL Sensor | `session2/sql_sensor.py` | `SqlSensor` in reschedule mode |
+| Datasets in Practice | `session2/datasets_demo.py` | Cross-DAG scheduling on a Dataset event, no polling |
+| Branching | `session2/branching_demo.py` | `@task.branch` routing on a live quality check |
+| Postgres Patterns | `session2/postgres_patterns.py` | `PostgresHook` vs. `SQLExecuteQueryOperator`, and the `{{ ds }}`-in-a-`@task`-body gotcha |
+| Capstone Reference | `session2/capstone_pipeline.py` | Every Session 2 topic wired into one pipeline — Sensors, TaskGroups, Branching, Datasets, idempotent SQL |
+
+Full run-of-show for each demo (signal-file commands, what to click, what the
+punchline is) is in that file's own module docstring, and in the matching
+section of the Session 2 instructor guide.
 
 ## Pre-Created Postgres Tables
 

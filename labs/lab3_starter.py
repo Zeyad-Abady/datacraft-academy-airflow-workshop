@@ -32,6 +32,10 @@ import requests
     catchup=False,
     tags=["lab3", "capstone"],
     default_args={"retries": 2},
+    # sql/ is its own top-level Docker volume (a sibling of dags/, not
+    # nested under it — see docker-compose.yaml), so a relative sql=
+    # path below only resolves once this is set.
+    template_searchpath=["/opt/airflow/sql"],
 )
 def lab3_capstone_pipeline():
 
@@ -51,7 +55,7 @@ def lab3_capstone_pipeline():
     # upsert_clean = SQLExecuteQueryOperator(
     #     task_id="upsert_clean",
     #     conn_id="postgres_default",
-    #     sql="sql/lab3/upsert_clean.sql",
+    #     sql="lab3/upsert_clean.sql",
     #     parameters={"run_date": "{{ ds }}"},
     # )
 
@@ -59,7 +63,7 @@ def lab3_capstone_pipeline():
     # aggregate_reporting = SQLExecuteQueryOperator(
     #     task_id="aggregate_reporting",
     #     conn_id="postgres_default",
-    #     sql="sql/lab3/reporting_aggregate.sql",
+    #     sql="lab3/reporting_aggregate.sql",
     #     parameters={"run_date": "{{ ds }}"},
     # )
 

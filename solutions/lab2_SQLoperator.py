@@ -48,20 +48,18 @@ def lab2_SQLoperator():
         data = r.json()
         return {"id": data["id"], "text": data["value"]}
 
-    insert_row = (
-        SQLExecuteQueryOperator(
-            task_id="insert_row",
-            conn_id="postgres_default",
-            sql="""
+    insert_row = SQLExecuteQueryOperator(
+        task_id="insert_row",
+        conn_id="postgres_default",
+        sql="""
         INSERT INTO lab1_staging (id, text, loaded_at)
         VALUES (%(id)s, %(text)s, NOW())
         ON CONFLICT (id) DO NOTHING;
         """,
-            parameters={
-                "id": "{{ ti.xcom_pull(task_ids='fetch_joke')['id'] }}",
-                "text": "{{ ti.xcom_pull(task_ids='fetch_joke')['text'] }}",
-            },
-        ),
+        parameters={
+            "id": "{{ ti.xcom_pull(task_ids='fetch_joke')['id'] }}",
+            "text": "{{ ti.xcom_pull(task_ids='fetch_joke')['text'] }}",
+        },
     )
 
     fetch_joke() >> insert_row
